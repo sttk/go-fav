@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+for v in "$@"
+do
+  go env -w GOTOOLCHAIN="go$v"
+  go version
+  go clean -cache -testcache
+  go test -cover -v $(go list ./... | grep -v /benchmark)
+  exitcd=$?
+  echo ""
+  if [[ ${exitcd} -gt 0 ]]; then
+    read -p "Continue? (Y/n) " userinput
+    if [ "$(echo ${userinput} | tr '[:upper:]' '[:lower:]')" == "n" ]; then
+      break
+    fi
+  fi
+done
+
+go env -u GOTOOLCHAIN
