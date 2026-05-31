@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
 
+# (C) 2026 Takayuki Sato
+# MIT License
+# https://github.com/sttk/go-fav
+
+opts=""
+
 for v in "$@"
 do
+  if [[ $v == '-'* ]]
+  then
+    opts="${opts} $v"
+    continue
+  fi
+
   go env -w GOTOOLCHAIN="go$v"
   go version
   go clean -cache -testcache
-  go test -cover $(go list ./... | grep -v /benchmark)
+  go test $opts -cover $(go list ./... | grep -v /benchmark)
   exitcd=$?
   echo ""
   if [[ ${exitcd} -gt 0 ]]; then
