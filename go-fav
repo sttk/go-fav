@@ -4,6 +4,8 @@
 # MIT License
 # https://github.com/sttk/go-fav
 
+readonly ORIG_GOTOOLCHAIN=$(go version | cut -f 3 -d' ')
+
 opts=""
 
 for v in "$@"
@@ -28,4 +30,6 @@ do
   fi
 done
 
-go env -u GOTOOLCHAIN
+if [[ "$ORIG_GOTOOLCHAIN" != "" ]]; then
+  go env -w GOTOOLCHAIN="$ORIG_GOTOOLCHAIN"
+fi
